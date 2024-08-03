@@ -8,9 +8,8 @@ def inter_means_threshold(image):
     if len(image.shape) == 3:
         # convert to grayscale
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    
-    # Initialize threshold with the mean pixel value
-    threshold = np.mean(image)
+        
+    threshold = np.mean(image) # Initialize threshold with the mean pixel value
     
     while True:
         # Segment the image into two groups
