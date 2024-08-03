@@ -4,14 +4,14 @@ import matplotlib.pyplot as plt
 import os
 
 def inter_means_threshold(image):
-    # Convert the image to grayscale if it is not already
+
     if len(image.shape) == 3:
+        # convert to grayscale
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     
     # Initialize threshold with the mean pixel value
     threshold = np.mean(image)
     
-    # Iterate until convergence
     while True:
         # Segment the image into two groups
         lower_group = image[image <= threshold]
@@ -29,14 +29,12 @@ def inter_means_threshold(image):
             break
         
         threshold = new_threshold
-    
     return int(threshold)
 
-def process_image(image_path):
+def process_image(image_path,figure_id):
     # Load the image
     image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
     
-    # Check if the image is loaded successfully
     if image is None:
         print(f"Error: Could not load image from {image_path}")
         return
@@ -48,13 +46,13 @@ def process_image(image_path):
     # Apply the threshold to binarize the image
     _, binary_image = cv2.threshold(image, threshold, 255, cv2.THRESH_BINARY)
     
-    # Save the binary image
-    output_path = os.path.join(os.path.dirname(image_path), f'/processed/binary_{os.path.basename(image_path)}')
+    # Save binary image to processed directory
+    output_path = f'./processed/{os.path.basename(image_path)}'
     cv2.imwrite(output_path, binary_image)
     print(f"Binary image saved to {output_path}")
 
-    # Display the original and binary images using matplotlib
-    plt.figure(figsize=(10, 5))
+    # Display imaged
+    plt.figure(figure_id,figsize=(10, 5))
 
     plt.subplot(1, 2, 1)
     plt.title("Original Image")
@@ -62,23 +60,20 @@ def process_image(image_path):
     plt.axis('off')
 
     plt.subplot(1, 2, 2)
-    plt.title("Binary Image")
+    plt.title("Segmented Image")
     plt.imshow(binary_image, cmap='gray')
     plt.axis('off')
 
-    plt.show()
-
-# /content/drive/MyDrive/Academics/MSc/Semester 2/CS5513-Computer Vision/image-segmentation-algorithm/input-images
-
 def main(directory_path):
-    # Get a list of all .jpg files in the directory
     image_files = [f for f in os.listdir(directory_path) if f.endswith('.jpg')]
-    
     # Process each image file
+    fig_id = 1
     for image_file in image_files:
         image_path = os.path.join(directory_path, image_file)
-        process_image(image_path)
+        process_image(image_path,fig_id)
+        fig_id += 1
+    plt.show()
 
 if __name__ == "__main__":
-    directory_path = '/content/drive/MyDrive/Academics/MSc/Semester 2/CS5513-Computer Vision/image-segmentation-algorithm/input-images/'  # Replace with the path to your directory
-    main(directory_path)
+    input_directory_path = './input/'
+    main(input_directory_path)
